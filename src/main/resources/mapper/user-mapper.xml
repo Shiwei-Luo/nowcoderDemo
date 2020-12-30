@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--Mybatis官方文档有模板文件-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace写userMapper的权限名，这样才能与userMapper一一对应-->
+<mapper namespace="com.nowcoder.community.dao.UserMapper">
+<!--mapper中的每一个标签都对应接口中一个方法，查询方法写select标签-->
+
+    <sql id="selectFields">
+        id, username, password, salt, email, type, status, activation_code, header_url, create_time
+    </sql>
+
+    <sql id="insertFields">
+        username, password, salt, email, type, status, activation_code, header_url, create_time
+    </sql>
+
+<!--    id应该对应方法名-->
+<!--    注意引用具体方法传参数的格式 id = # {id}-->
+    <select id="selectById" resultType="User">
+        select <include refid="selectFields"></include>
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="selectByName" resultType="User">
+        select <include refid="selectFields"></include>
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="selectByEmail" resultType="User">
+        select <include refid="selectFields"></include>
+        from user
+        where email = #{email}
+    </select>
+
+<!--    考虑传参，复杂传参Bean时，需要声明-->
+<!--    keyProperty（代表数据表中主键）应该与user中id对应，keyProperty中对应的值时实体类的属性，而不是数据库的字段，-->
+    <insert id="insertUser" parameterType="User" keyProperty="id">
+        insert into user (<include refid="insertFields"></include>)
+        values(#{username}, #{password}, #{salt}, #{email}, #{type}, #{status}, #{activationCode}, #{headerUrl}, #{createTime})
+    </insert>
+
+<!--    简单类型参数可以不用声明-->
+<!--    insert和update返回的都是整形，可以不用指定返回，而查询需要声明返回类型，往往insert,update需要声明参数类型-->
+    <update id="updateStatus">
+        update user set status = #{status} where id = #{id}
+    </update>
+
+    <update id="updateHeader">
+        update user set header_url = #{headerUrl} where id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        update user set password = #{password} where id = #{id}
+    </update>
+
+
+
+</mapper>
