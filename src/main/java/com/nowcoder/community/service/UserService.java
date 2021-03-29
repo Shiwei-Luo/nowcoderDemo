@@ -139,7 +139,7 @@ public class UserService implements CommunityConstant {
         }
 
         // 验证密码
-        password = CommunityUtil.md5(password);
+        password = CommunityUtil.md5(password + user.getSalt());
         if (!user.getPassword().equals(password)) {
             map.put("passwordMsg", "密码不正确!");
             return map;
@@ -167,5 +167,9 @@ public class UserService implements CommunityConstant {
 
     public int updateHeader(int userId, String headerUrl) {
         return userMapper.updateHeader(userId, headerUrl);
+    }
+
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
     }
 }
